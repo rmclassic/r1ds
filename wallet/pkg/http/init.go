@@ -2,10 +2,13 @@ package http
 
 import (
 	"net/http"
+	"wallet/database"
+	"wallet/database/mysql"
 	"wallet/pkg/http/handlers"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
+	"github.com/martini-contrib/render"
 )
 
 type Route struct {
@@ -16,20 +19,24 @@ type Route struct {
 }
 
 var routes []Route = []Route{
-	{"/wallet", http.MethodGet, []martini.Handler{handlers.GetWallet}, nil},
+	{"/wallet/:id", http.MethodGet, []martini.Handler{handlers.GetWalletBalance}, nil},
 }
 
 func Init() {
+	db := database.IDatabase(&mysql.MysqlDatabase{})
 	c := martini.Classic()
+	c.Use(render.Renderer())
+	c.Map(db)
+
 	for _, r := range routes {
 		ParamHandlerConcat := make([]martini.Handler, 0)
 		if r.Param != nil {
 			ParamHandlerConcat = append(ParamHandlerConcat, binding.Bind(r.Param))
 		}
-		ParamHandlerConcat = append(ParamHandlerConcat, c.Handlers)
-
-		c.AddRoute(r.Path, r.Path, ParamHandlerConcat...)
+		ParamHandlerConcat = append(ParamHandlerConcat, r.Handlers...)
+		c.AddRoute(r.Method, r.Path, ParamHandlerConcat...)
 	}
 
+	db.Init()
 	c.Run()
 }
