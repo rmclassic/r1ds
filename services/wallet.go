@@ -9,6 +9,8 @@ func GetWalletBalance(db database.IDatabase, walletId int) (models.Wallet, error
 	return db.GetWalletById(walletId)
 }
 
-func UseDiscount(db database.IDatabase, walletId int, discountId int) error {
-	return db.UseDiscount(walletId, discountId)
+func ChargeWallet(db database.IDatabase, phoneNumber string, amount float64) error {
+	db.WalletGetByPhoneNumber(phoneNumber)
+	db.WalletUpdate()
+
 }

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"wallet/database"
 	"wallet/database/mysql"
+	"wallet/models"
 	"wallet/pkg/http/handlers"
 
 	"github.com/go-martini/martini"
@@ -20,6 +21,7 @@ type Route struct {
 
 var routes []Route = []Route{
 	{"/wallet/:id", http.MethodGet, []martini.Handler{handlers.GetWalletBalance}, nil},
+	{"/wallet", http.MethodPut, []martini.Handler{handlers.AddUser}, models.AddUserParam{}},
 }
 
 func Init() {

@@ -50,3 +50,11 @@ func (c *MysqlDatabase) UseDiscount(walletId int, discountId int) error {
 
 	return err
 }
+
+func (db *MysqlDatabase) WalletAdd(wallet *models.Wallet) error {
+	return db.db.Save(wallet).Error
+}
+
+func (db *MysqlDatabase) WalletUpdate(wallet *models.Wallet) error {
+	return db.db.Create(wallet).Error
+}
