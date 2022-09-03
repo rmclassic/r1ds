@@ -5,6 +5,7 @@ import (
 	"wallet/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func (c *MysqlDatabase) GetWalletById(id int) (models.Wallet, error) {
@@ -15,12 +16,18 @@ func (c *MysqlDatabase) GetWalletById(id int) (models.Wallet, error) {
 func (c *MysqlDatabase) UseDiscount(walletId int, discountId int) error {
 	err := c.db.Transaction(func(tx *gorm.DB) error {
 		wallet := models.Wallet{ID: walletId}
-		if err := tx.Find(&wallet, &wallet); err != nil {
+		if err := tx.Clauses(clause.Locking{
+			Strength: "UPDATE",
+			Options:  "NOWAIT",
+		}).Find(&wallet, &wallet); err != nil {
 			return err.Error
 		}
 
 		discount := models.Discount{ID: discountId}
-		if err := tx.Find(&discount, &discount); err != nil {
+		if err := tx.Clauses(clause.Locking{
+			Strength: "UPDATE",
+			Options:  "NOWAIT",
+		}).Find(&discount, &discount); err != nil {
 			return err.Error
 		}
 
