@@ -8,11 +8,6 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func (c *MysqlDatabase) GetWalletById(id int) (models.Wallet, error) {
-	wallet := models.Wallet{}
-	return wallet, c.db.Find(&wallet, models.Wallet{ID: id}).Error
-}
-
 func (c *MysqlDatabase) UseDiscount(walletId int, discountId int) error {
 	err := c.db.Transaction(func(tx *gorm.DB) error {
 		wallet := models.Wallet{ID: walletId}
@@ -41,7 +36,7 @@ func (c *MysqlDatabase) UseDiscount(walletId int, discountId int) error {
 		}
 
 		// TODO: Add discount usage row
-		wallet.Credit += discount.Amount
+		wallet.Balance += discount.Amount
 		if err := tx.Save(wallet); err != nil {
 			return err.Error
 		}
@@ -52,9 +47,13 @@ func (c *MysqlDatabase) UseDiscount(walletId int, discountId int) error {
 }
 
 func (db *MysqlDatabase) WalletAdd(wallet *models.Wallet) error {
-	return db.db.Save(wallet).Error
+	return db.db.Create(wallet).Error
 }
 
 func (db *MysqlDatabase) WalletUpdate(wallet *models.Wallet) error {
-	return db.db.Create(wallet).Error
+	return db.db.Save(wallet).Error
+}
+
+func (db *MysqlDatabase) WalletGet(wallet *models.Wallet) error {
+	return db.db.Find(wallet, wallet).Error
 }

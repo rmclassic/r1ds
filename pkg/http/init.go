@@ -19,9 +19,11 @@ type Route struct {
 	Param    interface{}
 }
 
-var routes []Route = []Route{
-	{"/wallet/:id", http.MethodGet, []martini.Handler{handlers.GetWalletBalance}, nil},
-	{"/wallet", http.MethodPut, []martini.Handler{handlers.AddUser}, models.AddUserParam{}},
+var httpRoutes []Route = []Route{
+	{"/user", http.MethodPut, []martini.Handler{handlers.AddUser}, models.AddUserParam{}},
+	{"/user", http.MethodGet, []martini.Handler{handlers.GetUsers}, nil},
+	{"/user/:id/wallet", http.MethodGet, []martini.Handler{handlers.GetUserWallet}, nil},
+	{"/user/:id/wallet/charge", http.MethodPost, []martini.Handler{handlers.ChargeWallet}, models.ChargeWalletParam{}},
 }
 
 func Init() {
@@ -30,7 +32,7 @@ func Init() {
 	c.Use(render.Renderer())
 	c.Map(db)
 
-	for _, r := range routes {
+	for _, r := range httpRoutes {
 		ParamHandlerConcat := make([]martini.Handler, 0)
 		if r.Param != nil {
 			ParamHandlerConcat = append(ParamHandlerConcat, binding.Bind(r.Param))

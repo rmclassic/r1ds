@@ -1,6 +1,5 @@
 package models
 
 type ChargeWalletParam struct {
-	PhoneNumber string
-	Amount      float64
+	Amount float64
 }

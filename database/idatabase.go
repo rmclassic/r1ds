@@ -4,9 +4,13 @@ import "wallet/models"
 
 type IDatabase interface {
 	Init()
-	GetWalletById(int) (models.Wallet, error)
+	GetForUpdate(interface{}) error
+
 	UserAdd(*models.User) error
+	UserGet(*models.User) error
+	UserGetByPhoneNumber(string) (*models.User, error)
+
 	WalletAdd(*models.Wallet) error
 	WalletUpdate(*models.Wallet) error
-	WalletGetByPhoneNumber(string) error
+	WalletGet(*models.Wallet) error
 }

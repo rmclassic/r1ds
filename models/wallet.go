@@ -5,5 +5,4 @@ type Wallet struct {
 	UserID  int
 	User    User `gorm:"foreignkey:UserID" json:"-"`
 	Balance float64
-	Credit  float64
 }

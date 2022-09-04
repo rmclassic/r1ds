@@ -5,14 +5,10 @@ import (
 	"wallet/models"
 )
 
-func AddUser(db database.IDatabase, phoneNumber string) error {
-	user := models.User{
-		PhoneNumber: phoneNumber,
-	}
-
+func AddUser(db database.IDatabase, user *models.User) error {
 	wallet := models.Wallet{}
 
-	if err := db.UserAdd(&user); err != nil {
+	if err := db.UserAdd(user); err != nil {
 		return err
 	}
 
@@ -22,4 +18,12 @@ func AddUser(db database.IDatabase, phoneNumber string) error {
 	}
 
 	return nil
+}
+
+func GetUserByPhoneNumber(db database.IDatabase, phoneNumber string) (*models.User, error) {
+	user := &models.User{
+		PhoneNumber: phoneNumber,
+	}
+
+	return user, db.UserGet(user)
 }
