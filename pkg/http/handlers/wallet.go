@@ -20,7 +20,12 @@ func GetUserWallet(req *http.Request, db database.IDatabase, params martini.Para
 
 	wallet, err := services.GetUserWallet(db, userId)
 	if err != nil {
-		r.Error(http.StatusInternalServerError)
+		r.Status(http.StatusInternalServerError)
+		return
+	}
+
+	if wallet.UserID == 0 {
+		r.Status(http.StatusNotFound)
 		return
 	}
 
@@ -34,6 +39,11 @@ func ChargeWallet(req *http.Request, db database.IDatabase, params martini.Param
 		return
 	}
 
-	services.ChargeWallet(db, userId, model.Amount)
+	err = services.ChargeWallet(db, userId, model.Amount)
+	if err != nil {
+		r.Status(http.StatusBadRequest)
+		return
+	}
+
 	r.Status(http.StatusOK)
 }
