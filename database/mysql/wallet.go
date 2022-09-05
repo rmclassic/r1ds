@@ -55,5 +55,5 @@ func (db *MysqlDatabase) WalletUpdate(wallet *models.Wallet) error {
 }
 
 func (db *MysqlDatabase) WalletGet(wallet *models.Wallet) error {
-	return db.db.Find(wallet, wallet).Error
+	return db.db.Preload("User").Find(wallet, wallet).Error
 }
