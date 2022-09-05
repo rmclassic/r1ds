@@ -1,17 +1,17 @@
-
+version: '3'
 services:
  database:
   container_name: r1ds_wallet_db
-  image: mysql:8.0
+  image: mysql:latest
   volumes:
    - database:/var/lib/mysql
   ports:
    - "3335:3306"
   environment:
    - MYSQL_USER=wallet
-   - MYSQL_USER_PWD=ASecurePasswd
-   - 'MYSQL_ROOT_PWD=D0NTgUess'
-   - MYSQL_USER_DB=wallet_service
+   - MYSQL_PASSWORD=ASecurePwd
+   - MYSQL_DATABASE=wallet_service
+   - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
  backend:
   container_name: r1ds_wallet_backend
@@ -19,7 +19,7 @@ services:
   ports:
    - "4574:3000"
   environment:
-   - MYSQL_CONN=crmdfx:ASecurePasswd@tcp(r1ds_wallet_db:3306)/wallet_service?charset=utf8&parseTime=true
+   - MYSQL_CONN=wallet:ASecurePwd@tcp(r1ds_wallet_db:3306)/wallet_service?charset=utf8&parseTime=true
   depends_on:
    - database
 
